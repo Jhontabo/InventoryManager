@@ -13,6 +13,7 @@ Route::post('/login', function () {
 
     if (Auth::attempt($credentials)) {
         request()->session()->regenerate();
+
         return redirect('/admin');
     }
 
