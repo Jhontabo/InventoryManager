@@ -39,15 +39,19 @@ class AuthorizationPolicyTest extends TestCase
         Permission::findOrCreate('create_product', 'web');
         Permission::findOrCreate('update_product', 'web');
         Permission::findOrCreate('delete_product', 'web');
+        Permission::findOrCreate('update_user', 'web');
 
         $user = User::factory()->createOne();
-        $user->givePermissionTo(['create_product', 'update_product', 'delete_product']);
+        $userToUpdate = User::factory()->createOne();
+
+        $user->givePermissionTo(['create_product', 'update_product', 'delete_product', 'update_user']);
 
         $product = $this->createProduct();
 
         $this->assertTrue(Gate::forUser($user)->allows('create', Product::class));
         $this->assertTrue(Gate::forUser($user)->allows('update', $product));
         $this->assertTrue(Gate::forUser($user)->allows('delete', $product));
+        $this->assertTrue(Gate::forUser($user)->allows('update', $userToUpdate));
     }
 
     public function test_admin_role_with_seeded_permissions_can_create_and_update_resources(): void

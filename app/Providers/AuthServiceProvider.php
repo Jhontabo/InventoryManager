@@ -2,21 +2,26 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use App\Models\Reserva;
-use App\Models\Horario;
-use App\Models\Laboratorio;
-use App\Models\Permiso;
-use App\Models\Producto;
-use App\Models\Rol;
+use App\Models\AcademicProgram;
+use App\Models\AvailableProduct;
+use App\Models\Booking;
+use App\Models\Laboratory;
+use App\Models\Loan;
+use App\Models\Product;
+use App\Models\Role;
+use App\Models\Schedule;
 use App\Models\User;
-use App\Policies\ReservaPolicy;
-use App\Policies\HorarioPolicy;
-use App\Policies\LaboratorioPolicy;
-use App\Policies\PermisoPolicy;
-use App\Policies\ProductoPolicy;
-use App\Policies\RolPolicy;
+use App\Policies\AcademicProgramPolicy;
+use App\Policies\AvailableProductPolicy;
+use App\Policies\BookingPolicy;
+use App\Policies\LaboratoryPolicy;
+use App\Policies\LoanPolicy;
+use App\Policies\ProductPolicy;
+use App\Policies\RolePolicy;
+use App\Policies\SchedulePolicy;
 use App\Policies\UserPolicy;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -26,24 +31,33 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        Reserva::class => ReservaPolicy::class,
-        Horario::class => HorarioPolicy::class,
-        Laboratorio::class => LaboratorioPolicy::class,
-        Permiso::class => PermisoPolicy::class,
-        Producto::class => ProductoPolicy::class,
-        Rol::class => RolPolicy::class,
+        AcademicProgram::class => AcademicProgramPolicy::class,
+        AvailableProduct::class => AvailableProductPolicy::class,
+        Booking::class => BookingPolicy::class,
+        Laboratory::class => LaboratoryPolicy::class,
+        Loan::class => LoanPolicy::class,
+        Product::class => ProductPolicy::class,
+        Role::class => RolePolicy::class,
+        Schedule::class => SchedulePolicy::class,
         User::class => UserPolicy::class,
     ];
 
     /**
      * Register any authentication / authorization services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerPolicies();
 
-        // No es necesario definir gates por ahora.
+        $configuredSuperAdminRole = (string) config('filament-shield.super_admin.name', 'SUPER-ADMIN');
+        $superAdminRoleNames = array_unique([$configuredSuperAdminRole, 'SUPER-ADMIN', 'super_admin']);
+
+        Gate::before(function (User $user) use ($superAdminRoleNames) {
+            if ($user->hasRole($superAdminRoleNames)) {
+                return true;
+            }
+
+            return null;
+        });
     }
 }
