@@ -18,5 +18,6 @@ class ProductTest extends TestCase
         $this->assertInstanceOf(BelongsToMany::class, $product->schedules());
         $this->assertInstanceOf(BelongsTo::class, $product->laboratory());
         $this->assertInstanceOf(HasMany::class, $product->loans());
+        $this->assertInstanceOf(HasMany::class, $product->maintenances());
     }
 }

@@ -116,6 +116,11 @@ class Product extends Model
         return $this->hasMany(Loan::class, 'product_id');
     }
 
+    public function maintenances()
+    {
+        return $this->hasMany(Maintenance::class, 'product_id');
+    }
+
     public function decommissionedBy()
     {
         return $this->belongsTo(User::class, 'decommissioned_by');

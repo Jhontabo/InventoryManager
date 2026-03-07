@@ -441,6 +441,12 @@ class ProductResource extends Resource
                         ->modalSubmitAction(false)
                         ->hidden(fn (Product $record) => $record->product_type !== 'equipment'),
 
+                    Action::make('maintenance')
+                        ->label('Registrar mantenimiento')
+                        ->icon('heroicon-o-wrench-screwdriver')
+                        ->color('primary')
+                        ->url(fn (Product $record): string => MaintenanceResource::getUrl('create', ['product_id' => $record->id])),
+
                     DeleteAction::make()
                         ->label('Eliminar')
                         ->icon('heroicon-o-trash')

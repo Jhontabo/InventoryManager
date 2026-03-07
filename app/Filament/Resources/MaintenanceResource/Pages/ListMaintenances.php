@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Filament\Resources\MaintenanceResource\Pages;
+
+use App\Filament\Resources\MaintenanceResource;
+use Filament\Actions;
+use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Enums\Width;
+
+class ListMaintenances extends ListRecords
+{
+    protected static string $resource = MaintenanceResource::class;
+
+    protected Width|string|null $maxContentWidth = Width::Full;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\CreateAction::make(),
+        ];
+    }
+}
