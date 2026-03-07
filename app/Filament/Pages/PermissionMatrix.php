@@ -5,7 +5,11 @@ namespace App\Filament\Pages;
 use App\Filament\Concerns\HasPanelRoleAccess;
 use App\Models\Permission;
 use App\Models\Role;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Spatie\Permission\PermissionRegistrar;
 
 class PermissionMatrix extends Page
 {
@@ -27,6 +31,18 @@ class PermissionMatrix extends Page
 
     public array $rows = [];
 
+    public array $modules = [];
+
+    public array $actions = [];
+
+    public string $selectedRole = '';
+
+    public string $selectedModule = '';
+
+    public string $selectedAction = '';
+
+    public string $search = '';
+
     public static function canAccess(): bool
     {
         return static::userHasAnyRole(['ADMIN']);
@@ -38,6 +54,37 @@ class PermissionMatrix extends Page
     }
 
     public function mount(): void
+    {
+        $this->refreshMatrix();
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('cloneRolePermissions')
+                ->label('Clonar permisos')
+                ->icon('heroicon-o-document-duplicate')
+                ->color('primary')
+                ->form([
+                    Select::make('from_role')
+                        ->label('Rol origen')
+                        ->options(fn (): array => Role::query()->orderBy('name')->pluck('name', 'name')->toArray())
+                        ->searchable()
+                        ->required(),
+                    Select::make('to_role')
+                        ->label('Rol destino')
+                        ->options(fn (): array => Role::query()->orderBy('name')->pluck('name', 'name')->toArray())
+                        ->searchable()
+                        ->required(),
+                ])
+                ->action(function (array $data): void {
+                    $this->copyPermissionsBetweenRoles($data['from_role'], $data['to_role']);
+                })
+                ->requiresConfirmation(),
+        ];
+    }
+
+    public function refreshMatrix(): void
     {
         $roles = Role::query()
             ->with('permissions:id,name')
@@ -102,6 +149,82 @@ class PermissionMatrix extends Page
         });
 
         $this->rows = array_values($rows);
+        $this->modules = array_values(array_unique(array_column($this->rows, 'module')));
+        $this->actions = array_values(array_unique(array_column($this->rows, 'action')));
+    }
+
+    public function resetFilters(): void
+    {
+        $this->selectedRole = '';
+        $this->selectedModule = '';
+        $this->selectedAction = '';
+        $this->search = '';
+    }
+
+    public function copyPermissionsBetweenRoles(string $fromRole, string $toRole): void
+    {
+        if ($fromRole === $toRole) {
+            Notification::make()
+                ->title('El rol origen y destino no pueden ser iguales.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        $sourceRole = Role::query()->where('name', $fromRole)->first();
+        $targetRole = Role::query()->where('name', $toRole)->first();
+
+        if (! $sourceRole || ! $targetRole) {
+            Notification::make()
+                ->title('No se encontró uno de los roles seleccionados.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
+        $targetRole->syncPermissions($sourceRole->permissions->pluck('name')->all());
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        $this->refreshMatrix();
+
+        Notification::make()
+            ->title("Permisos clonados de {$fromRole} a {$toRole}.")
+            ->success()
+            ->send();
+    }
+
+    public function getDisplayedRolesProperty(): array
+    {
+        if ($this->selectedRole !== '' && in_array($this->selectedRole, $this->roles, true)) {
+            return [$this->selectedRole];
+        }
+
+        return $this->roles;
+    }
+
+    public function getFilteredRowsProperty(): array
+    {
+        return array_values(array_filter($this->rows, function (array $row): bool {
+            if ($this->selectedModule !== '' && $row['module'] !== $this->selectedModule) {
+                return false;
+            }
+
+            if ($this->selectedAction !== '' && $row['action'] !== $this->selectedAction) {
+                return false;
+            }
+
+            if ($this->search !== '') {
+                $haystack = mb_strtolower(
+                    $row['module'].' '.$row['action'].' '.$row['permission']
+                );
+
+                return str_contains($haystack, mb_strtolower($this->search));
+            }
+
+            return true;
+        }));
     }
 
     private function parsePermissionName(string $permission): array
