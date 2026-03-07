@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    env:
+      APP_ENV: testing
+      APP_DEBUG: true
+      APP_LOCALE: es
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ':memory:'
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+      MAIL_MAILER: array
+      BCRYPT_ROUNDS: 4
+      LOG_CHANNEL: stderr
+      LOG_LEVEL: debug
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+          extensions: mbstring, dom, fileinfo, intl, pdo_sqlite, sqlite3
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Prepare app env
+        run: |
+          cp example.env .env
+          php artisan key:generate --ansi
+
+      - name: Check coding style (safe blocking scope)
+        run: ./vendor/bin/pint --test app/Services app/Http app/Models app/Policies app/Filament/Widgets routes tests
+
+      - name: Check coding style (full repo, report only)
+        run: ./vendor/bin/pint --test
+        continue-on-error: true
+
+      - name: Run tests
+        run: php artisan test
+
+      - name: Build frontend
+        run: npm run build
