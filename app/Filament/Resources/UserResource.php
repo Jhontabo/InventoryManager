@@ -5,19 +5,19 @@ namespace App\Filament\Resources;
 use App\Filament\Concerns\HasPanelRoleAccess;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
+use Filament\Actions;
+use Filament\Actions\BulkAction;
 use Filament\Forms;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
-use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables;
-use Filament\Actions\BulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Actions;
 // Necesario para hashear contraseñas
 // Necesario para lógica condicional en formularios
 use Illuminate\Database\Eloquent\Model; // Para agrupar campos visualmente
@@ -30,13 +30,13 @@ class UserResource extends Resource
 
     protected static ?string $model = User::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-users';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $modelLabel = 'Usuario';
 
     protected static ?string $pluralModelLabel = 'Usuarios';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Administración';
+    protected static string|\UnitEnum|null $navigationGroup = 'Administración';
 
     protected static ?int $navigationSort = 1;
 
@@ -338,6 +338,7 @@ class UserResource extends Resource
             ->defaultSort('created_at', 'desc') // Ordenar por defecto por los más recientes
             ->deferLoading()
             ->persistFiltersInSession()
+            ->persistSortInSession()
             ->persistSearchInSession()
             ->striped();
     }

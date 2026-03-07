@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Booking extends Model
 {
-    use HasAudits, HasFactory, SoftDeletes;
+    use HasAudits, HasFactory, LogsActivity, SoftDeletes;
 
     protected $table = 'bookings';
 
@@ -113,5 +115,14 @@ class Booking extends Model
     public function getEmailAttribute(): ?string
     {
         return $this->attributes['email'] ?? $this->user?->email;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('bookings')
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

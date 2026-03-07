@@ -19,11 +19,11 @@ class LoanResource extends Resource
 
     protected static ?string $model = Loan::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static ?string $navigationLabel = 'Mis préstamos';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Préstamos';
+    protected static string|\UnitEnum|null $navigationGroup = 'Préstamos';
 
     protected static ?int $navigationSort = 1;
 
@@ -115,6 +115,11 @@ class LoanResource extends Resource
                     ])
                     ->label('Estado del préstamo'),
             ])
+            ->defaultSort('requested_at', 'desc')
+            ->persistFiltersInSession()
+            ->persistSortInSession()
+            ->persistSearchInSession()
+            ->striped()
             ->emptyStateHeading('Aún no tienes préstamos registrados')
             ->emptyStateDescription('Aquí verás el estado de tus solicitudes y devoluciones.')
             ->emptyStateIcon('heroicon-o-clipboard-document-list');

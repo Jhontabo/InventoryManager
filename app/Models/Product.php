@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Product extends Model
 {
-    use HasAudits, HasFactory, SoftDeletes;
+    use HasAudits, HasFactory, LogsActivity, Searchable, SoftDeletes;
 
     protected $table = 'products';
 
@@ -131,5 +134,26 @@ class Product extends Model
     public function equipmentDecommissions()
     {
         return $this->hasMany(EquipmentDecommission::class, 'product_id');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('products')
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'serial_number' => $this->serial_number,
+            'status' => $this->status,
+            'product_type' => $this->product_type,
+        ];
     }
 }

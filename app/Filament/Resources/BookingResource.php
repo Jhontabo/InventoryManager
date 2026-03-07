@@ -11,17 +11,17 @@ use App\Models\Product;
 use App\Models\Schedule;
 use App\Models\User;
 use Carbon\Carbon;
-use Filament\Schemas\Components\Grid;
+use Filament\Actions\Action as TableAction;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Radio;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Navigation\NavigationItem;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Actions\Action as TableAction;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -34,13 +34,13 @@ class BookingResource extends Resource
     // This resource lists schedule slots and creates Booking records from them.
     protected static ?string $model = Schedule::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-calendar-days';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 
     protected static ?string $modelLabel = 'Reservar Espacio';
 
     protected static ?string $navigationLabel = 'Reservar Espacio';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Gestión de Reservas';
+    protected static string|\UnitEnum|null $navigationGroup = 'Gestión de Reservas';
 
     protected static ?int $navigationSort = 1;
 
@@ -283,7 +283,12 @@ class BookingResource extends Resource
                             ->body('Tu reserva fue registrada y está pendiente de aprobación.')
                             ->duration(5005)
                     ),
-            ]);
+            ])
+            ->defaultSort('start_at', 'asc')
+            ->persistFiltersInSession()
+            ->persistSortInSession()
+            ->persistSearchInSession()
+            ->striped();
     }
 
     public static function getWidgets(): array

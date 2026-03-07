@@ -39,6 +39,7 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="SCOUT_DRIVER" value="collection"/>
         
         <!-- Deshabilitar herramientas de monitoreo -->
         <env name="TELESCOPE_ENABLED" value="false"/>

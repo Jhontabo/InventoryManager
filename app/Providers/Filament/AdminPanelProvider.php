@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use AlizHarb\ActivityLog\ActivityLogPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,7 +28,10 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->globalSearch(false)
+            ->globalSearch(true)
+            ->globalSearchDebounce('600ms')
+            ->globalSearchKeyBindings(['ctrl+k', 'command+k'])
+            ->globalSearchFieldSuffix('Ctrl+K')
             ->id('admin')
             ->path('admin')
             ->maxContentWidth(Width::Full)
@@ -48,8 +52,13 @@ class AdminPanelProvider extends PanelProvider
                     ->label('Configuración'),
             ])
             ->databaseNotifications()
+            ->databaseNotificationsPolling('20s')
             ->plugins([
                 FilamentShieldPlugin::make(),
+                ActivityLogPlugin::make()
+                    ->label('Auditoria')
+                    ->pluralLabel('Auditorias')
+                    ->navigationGroup('Administración'),
                 FilamentEditProfilePlugin::make()
                     ->slug('mi-perfil')
                     ->setTitle('Mi perfil')
