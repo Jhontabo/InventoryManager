@@ -16,9 +16,9 @@ class ApplicationAccessTest extends TestCase
 
     public function test_home_page_loads_fails(): void
     {
-        // Usuario no autenticado - debe recibir 404
+        // La ruta dashboard redirige al admin.
         $response = $this->get('/dashboard');
-        $response->assertStatus(404);
+        $response->assertRedirect('/admin');
     }
 
     public function test_authenticated_user_is_redirected_from_home_to_dashboard(): void
@@ -26,7 +26,7 @@ class ApplicationAccessTest extends TestCase
         $this->actingAs(new User(['status' => 'active']));
 
         $this->get('/')
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect('/admin');
     }
 
     public function test_authenticated_user_is_redirected_from_dashboard_to_admin(): void
