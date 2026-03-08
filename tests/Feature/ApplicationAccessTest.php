@@ -14,7 +14,7 @@ class ApplicationAccessTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_home_page_loads_fails(): void
+    public function test_dashboard_route_redirects_to_admin(): void
     {
         // La ruta dashboard redirige al admin.
         $response = $this->get('/dashboard');

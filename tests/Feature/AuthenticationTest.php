@@ -49,6 +49,29 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_login_route_is_rate_limited_after_multiple_failed_attempts(): void
+    {
+        User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password123'),
+        ]);
+
+        for ($attempt = 1; $attempt <= 5; $attempt++) {
+            $this->post('/login', [
+                'email' => 'test@example.com',
+                'password' => 'wrongpassword',
+            ]);
+        }
+
+        $response = $this->post('/login', [
+            'email' => 'test@example.com',
+            'password' => 'wrongpassword',
+        ]);
+
+        $response->assertStatus(429);
+        $this->assertGuest();
+    }
+
     public function test_authenticated_user_redirects_to_admin(): void
     {
         $user = User::factory()->createOne();

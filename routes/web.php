@@ -1,26 +1,31 @@
 <?php
 
 use App\Services\ReportService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 
 Route::get('/', function () {
     return Auth::check() ? redirect('/admin') : view('auth.login');
 })->name('login');
 
-Route::post('/login', function () {
-    $credentials = request()->only('email', 'password');
+Route::post('/login', function (Request $request) {
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required', 'string'],
+    ]);
 
     if (Auth::attempt($credentials)) {
-        request()->session()->regenerate();
+        $request->session()->regenerate();
 
         return redirect('/admin');
     }
 
-    return back()->withErrors([
+    throw ValidationException::withMessages([
         'email' => 'Las credenciales no coinciden con nuestros registros.',
     ]);
-})->name('custom.login');
+})->middleware(['guest', 'throttle:5,1'])->name('custom.login');
 
 Route::get('/dashboard', function () {
     return redirect('/admin');

@@ -25,7 +25,7 @@ class UsersSeeder extends Seeder
             Role::firstOrCreate(['name' => $role, 'guard_name' => 'web']);
         }
 
-        $superAdminEmail = (string) env('SUPER_ADMIN_EMAIL', 'jhonse.tajumbin@gmail.com');
+        $superAdminEmail = (string) env('SUPER_ADMIN_EMAIL', 'admin@example.com');
         $superAdminPassword = env('SUPER_ADMIN_PASSWORD');
 
         $attributes = [
