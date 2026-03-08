@@ -94,7 +94,7 @@ class Booking extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function products(): BelongsToMany
+    public function productLinks(): BelongsToMany
     {
         return $this->belongsToMany(Product::class)
             ->withPivot(['start_at', 'end_at', 'status'])

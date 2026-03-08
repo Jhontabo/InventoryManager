@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#fff7ed"/>
+  <rect x="0" y="0" width="1280" height="84" fill="#ea580c"/>
+  <text x="40" y="53" font-family="Arial, sans-serif" font-size="30" fill="#ffffff">Inventario de Productos</text>
+  <rect x="40" y="120" width="1200" height="560" rx="12" fill="#ffffff" stroke="#fed7aa"/>
+  <rect x="70" y="160" width="1140" height="44" rx="6" fill="#ffedd5"/>
+  <text x="90" y="190" font-family="Arial, sans-serif" font-size="18" fill="#9a3412">Nombre</text>
+  <text x="420" y="190" font-family="Arial, sans-serif" font-size="18" fill="#9a3412">Laboratorio</text>
+  <text x="700" y="190" font-family="Arial, sans-serif" font-size="18" fill="#9a3412">Stock</text>
+  <text x="910" y="190" font-family="Arial, sans-serif" font-size="18" fill="#9a3412">Estado</text>
+  <rect x="70" y="230" width="1140" height="36" rx="4" fill="#fff" stroke="#ffedd5"/>
+  <rect x="70" y="278" width="1140" height="36" rx="4" fill="#fff" stroke="#ffedd5"/>
+  <rect x="70" y="326" width="1140" height="36" rx="4" fill="#fff" stroke="#ffedd5"/>
+  <rect x="70" y="374" width="1140" height="36" rx="4" fill="#fff" stroke="#ffedd5"/>
+  <text x="30" y="700" font-family="Arial, sans-serif" font-size="20" fill="#7c2d12">Mockup visual. Reemplazar por captura real en docs/screenshots/inventory.svg o inventory.png</text>
+</svg>

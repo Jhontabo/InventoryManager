@@ -38,6 +38,6 @@ class BookingTest extends TestCase
         $this->assertInstanceOf(BelongsTo::class, $booking->schedule());
         $this->assertInstanceOf(BelongsTo::class, $booking->laboratory());
         $this->assertInstanceOf(BelongsTo::class, $booking->user());
-        $this->assertInstanceOf(BelongsToMany::class, $booking->products());
+        $this->assertInstanceOf(BelongsToMany::class, $booking->productLinks());
     }
 }

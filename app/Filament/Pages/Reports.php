@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Laboratory;
 use App\Models\Loan;
 use App\Models\Product;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Cache;
@@ -48,7 +49,23 @@ class Reports extends Page
 
     protected static function canView(): bool
     {
-        return static::userHasAnyRole(['ADMIN', 'COORDINADOR', 'LABORATORISTA']);
+        return static::canDownloadReports(auth()->user());
+    }
+
+    public static function canDownloadReports(?User $user): bool
+    {
+        if (! $user) {
+            return false;
+        }
+
+        $roles = ['ADMIN', 'COORDINADOR', 'LABORATORISTA'];
+        $superAdminRoles = array_unique([
+            (string) config('filament-shield.super_admin.name', 'SUPER-ADMIN'),
+            'SUPER-ADMIN',
+            'super_admin',
+        ]);
+
+        return $user->hasAnyRole(array_merge($roles, $superAdminRoles));
     }
 
     public function mount(): void
@@ -68,12 +85,14 @@ class Reports extends Page
                 ->label(__('panel.actions.download_pdf'))
                 ->icon('heroicon-o-document-arrow-down')
                 ->color('primary')
+                ->visible(fn (): bool => static::canDownloadReports(auth()->user()))
                 ->url(route('reports.dashboard.download')),
 
             Action::make('downloadExcel')
                 ->label(__('panel.actions.download_excel'))
                 ->icon('heroicon-o-table-cells')
                 ->color('success')
+                ->visible(fn (): bool => static::canDownloadReports(auth()->user()))
                 ->url(route('reports.excel.download')),
         ];
     }
