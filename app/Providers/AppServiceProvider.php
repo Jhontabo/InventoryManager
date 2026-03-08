@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Models\User;
+use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -25,7 +25,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
-        App::setLocale('es');
+        LanguageSwitch::configureUsing(function (LanguageSwitch $switch): void {
+            $switch
+                ->locales(['es', 'en'])
+                ->labels([
+                    'es' => 'Español',
+                    'en' => 'English',
+                ]);
+        });
         Gate::define('viewPulse', fn (?User $user) => app()->environment('local') || ($user?->status === 'active'));
 
         Livewire::component('edit_profile_form', \Joaopaulolndev\FilamentEditProfile\Livewire\EditProfileForm::class);

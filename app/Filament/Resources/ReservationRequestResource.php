@@ -31,15 +31,35 @@ class ReservationRequestResource extends Resource
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-check';
 
-    protected static ?string $navigationLabel = 'Solicitud de reserva';
+    protected static ?string $navigationLabel = null;
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Gestión de Reservas';
+    protected static string | \UnitEnum | null $navigationGroup = null;
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $modelLabel = 'Solicitud';
+    protected static ?string $modelLabel = null;
 
-    protected static ?string $pluralLabel = 'Solicitudes de reserva';
+    protected static ?string $pluralLabel = null;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('panel.nav.bookings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('panel.resources.reservation_requests.navigation');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('panel.resources.reservation_requests.model');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('panel.resources.reservation_requests.plural');
+    }
 
     public static function canViewAny(): bool
     {

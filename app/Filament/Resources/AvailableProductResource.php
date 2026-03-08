@@ -24,13 +24,33 @@ class AvailableProductResource extends Resource
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-shopping-cart';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Préstamos';
+    protected static string | \UnitEnum | null $navigationGroup = null;
 
-    protected static ?string $navigationLabel = 'Solicitar préstamo';
+    protected static ?string $navigationLabel = null;
 
-    protected static ?string $modelLabel = 'Producto';
+    protected static ?string $modelLabel = null;
 
-    protected static ?string $pluralLabel = 'Productos para préstamos';
+    protected static ?string $pluralLabel = null;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('panel.nav.loans');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('panel.resources.available_product.navigation');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('panel.resources.available_product.model');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('panel.resources.available_product.plural');
+    }
 
     public static function getEloquentQuery(): Builder
     {

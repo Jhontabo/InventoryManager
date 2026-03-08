@@ -36,11 +36,11 @@ class BookingResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-calendar-days';
 
-    protected static ?string $modelLabel = 'Reservar Espacio';
+    protected static ?string $modelLabel = null;
 
-    protected static ?string $navigationLabel = 'Reservar Espacio';
+    protected static ?string $navigationLabel = null;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Gestión de Reservas';
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
     protected static ?int $navigationSort = 1;
 
@@ -49,14 +49,29 @@ class BookingResource extends Resource
         return static::userHasAnyRole(['ADMIN', 'COORDINADOR', 'LABORATORISTA', 'DOCENTE', 'ESTUDIANTE']);
     }
 
+    public static function getModelLabel(): string
+    {
+        return __('panel.booking.resource_label');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('panel.booking.navigation_label');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('panel.nav.bookings');
+    }
+
     public static function getNavigationItems(): array
     {
         return [
             NavigationItem::make()
-                ->label('Reservar Espacio')
+                ->label(__('panel.booking.nav_item'))
                 ->url(static::getUrl())
                 ->icon(static::$navigationIcon)
-                ->group('Gestión de Reservas')
+                ->group(__('panel.nav.bookings'))
                 ->isActiveWhen(fn (): bool => request()->is('admin/bookings') && ! request()->is('admin/bookings/calendario')),
         ];
     }
@@ -89,7 +104,7 @@ class BookingResource extends Resource
             )
             ->columns([
                 TextColumn::make('laboratory.name')
-                    ->label('Espacio Académico')
+                    ->label(__('panel.booking.lab_space'))
                     ->sortable()
                     ->searchable()
                     ->badge()
@@ -98,34 +113,34 @@ class BookingResource extends Resource
                     )
                     ->formatStateUsing(
                         fn (Schedule $record) => $record->laboratory->name.
-                          ($record->booking_count > 0 ? ' (Ocupado)' : ' (Libre)')
+                          ($record->booking_count > 0 ? ' ('.__('panel.booking.slot_occupied').')' : ' ('.__('panel.booking.slot_available').')')
                     ),
 
                 TextColumn::make('start_at')
-                    ->label('Inicio')
+                    ->label(__('panel.booking.start'))
                     ->sortable()
                     ->formatStateUsing(
-                        fn (string $state): string => Carbon::parse($state)->locale('es')->translatedFormat('l, d \d\e F \d\e Y - g:i A')
+                        fn (string $state): string => Carbon::parse($state)->locale(app()->getLocale())->translatedFormat('l, d \d\e F \d\e Y - g:i A')
                     ),
 
                 TextColumn::make('end_at')
-                    ->label('Fin')
+                    ->label(__('panel.booking.end'))
                     ->sortable()
                     ->formatStateUsing(
-                        fn (string $state): string => Carbon::parse($state)->locale('es')->translatedFormat('l, d \d\e F \d\e Y - g:i A')
+                        fn (string $state): string => Carbon::parse($state)->locale(app()->getLocale())->translatedFormat('l, d \d\e F \d\e Y - g:i A')
                     ),
             ])
             ->filters([
                 SelectFilter::make('laboratory')
-                    ->label('Espacio Académico')
+                    ->label(__('panel.booking.lab_space'))
                     ->relationship('laboratory', 'name')
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('availability')
-                    ->label('Disponibilidad')
+                    ->label(__('panel.booking.availability'))
                     ->options([
-                        'available' => 'Libres',
-                        'occupied' => 'Ocupados',
+                        'available' => __('panel.booking.available'),
+                        'occupied' => __('panel.booking.occupied'),
                     ])
                     ->query(function ($query, $data) {
                         if ($data['value'] === 'available') {
@@ -138,23 +153,23 @@ class BookingResource extends Resource
             ->filtersFormColumns(2)
             ->headerActions([
                 TableAction::make('ver_calendario')
-                    ->label('Ver Calendario')
+                    ->label(__('panel.booking.view_calendar'))
                     ->icon('heroicon-o-calendar')
                     ->color('gray')
                     ->url('/admin/bookings/calendario'),
             ])
             ->actions([
                 TableAction::make('reservar')
-                    ->label('Reservar')
+                    ->label(__('panel.booking.reserve'))
                     ->button()
                     ->disabled(
                         fn (Schedule $record): bool => $record->booking_count > 0
                     )
-                    ->modalHeading('Solicitud de Reserva')
-                    ->modalDescription('Completa los datos para solicitar este espacio.')
+                    ->modalHeading(__('panel.booking.reserve_request_title'))
+                    ->modalDescription(__('panel.booking.reserve_request_description'))
                     ->modalWidth('2xl')
                     ->form([
-                        Section::make('Espacio y horario seleccionado')
+                        Section::make(__('panel.booking.selected_slot'))
                             ->icon('heroicon-o-calendar-days')
                             ->collapsed(false)
                             ->compact()
@@ -168,31 +183,31 @@ class BookingResource extends Resource
                                     ->default(fn (Schedule $record) => $record->end_at),
                                 Grid::make(3)->schema([
                                     Placeholder::make('laboratory_display')
-                                        ->label('Espacio académico')
+                                        ->label(__('panel.booking.selected_lab'))
                                         ->content(fn (Schedule $record) => $record->laboratory->name ?? 'No asignado'),
                                     Placeholder::make('start_display')
-                                        ->label('Inicio')
-                                        ->content(fn (Schedule $record) => Carbon::parse($record->start_at)->locale('es')->translatedFormat('D d M Y - g:i A')),
+                                        ->label(__('panel.booking.start'))
+                                        ->content(fn (Schedule $record) => Carbon::parse($record->start_at)->locale(app()->getLocale())->translatedFormat('D d M Y - g:i A')),
                                     Placeholder::make('end_display')
-                                        ->label('Fin')
-                                        ->content(fn (Schedule $record) => Carbon::parse($record->end_at)->locale('es')->translatedFormat('D d M Y - g:i A')),
+                                        ->label(__('panel.booking.end'))
+                                        ->content(fn (Schedule $record) => Carbon::parse($record->end_at)->locale(app()->getLocale())->translatedFormat('D d M Y - g:i A')),
                                 ]),
                             ]),
 
-                        Section::make('Información del proyecto')
+                        Section::make(__('panel.booking.project_info'))
                             ->icon('heroicon-o-academic-cap')
                             ->schema([
                                 Radio::make('project_type')
-                                    ->label('Tipo de proyecto')
+                                    ->label(__('panel.booking.project_type'))
                                     ->options([
-                                        'Trabajo de grado' => 'Trabajo de grado',
-                                        'Investigación profesoral' => 'Investigación profesoral',
+                                        'Trabajo de grado' => __('panel.booking.project_type_degree'),
+                                        'Investigación profesoral' => __('panel.booking.project_type_research'),
                                     ])
                                     ->inline()
                                     ->required(),
                                 Grid::make(2)->schema([
                                     Select::make('academic_program')
-                                        ->label('Programa académico')
+                                        ->label(__('panel.booking.academic_program'))
                                         ->options(fn () => AcademicProgram::where('is_active', true)
                                             ->orderBy('name')
                                             ->pluck('name', 'name'))
@@ -200,22 +215,22 @@ class BookingResource extends Resource
                                         ->preload()
                                         ->required(),
                                     Select::make('semester')
-                                        ->label('Semestre')
+                                        ->label(__('panel.booking.semester'))
                                         ->options(array_combine(range(1, 10), range(1, 10)))
                                         ->required(),
                                 ]),
                                 TextInput::make('research_name')
-                                    ->label('Nombre de la investigación')
-                                    ->placeholder('Ej: Análisis de muestras de suelo')
+                                    ->label(__('panel.booking.research_name'))
+                                    ->placeholder(__('panel.booking.research_name_placeholder'))
                                     ->required(),
                             ]),
 
-                        Section::make('Participantes')
+                        Section::make(__('panel.booking.participants'))
                             ->icon('heroicon-o-user-group')
                             ->schema([
                                 Select::make('applicants')
-                                    ->label('Solicitantes')
-                                    ->helperText('Busca por nombre, apellido o correo.')
+                                    ->label(__('panel.booking.applicants'))
+                                    ->helperText(__('panel.booking.applicants_help'))
                                     ->multiple()
                                     ->searchable()
                                     ->getSearchResultsUsing(fn (string $search) => User::where('name', 'like', "%{$search}%")
@@ -226,8 +241,8 @@ class BookingResource extends Resource
                                         ->mapWithKeys(fn ($user) => [$user->id => "{$user->name} {$user->last_name} - {$user->email}"]))
                                     ->required(),
                                 Select::make('advisor')
-                                    ->label('Asesor')
-                                    ->helperText('Busca por nombre, apellido o correo.')
+                                    ->label(__('panel.booking.advisor'))
+                                    ->helperText(__('panel.booking.advisor_help'))
                                     ->searchable()
                                     ->getSearchResultsUsing(fn (string $search) => User::where('name', 'like', "%{$search}%")
                                         ->orWhere('last_name', 'like', "%{$search}%")
@@ -238,12 +253,12 @@ class BookingResource extends Resource
                                     ->required(),
                             ]),
 
-                        Section::make('Materiales y equipos')
+                        Section::make(__('panel.booking.materials'))
                             ->icon('heroicon-o-beaker')
                             ->schema([
                                 Select::make('products')
-                                    ->label('Productos requeridos')
-                                    ->helperText('Selecciona los materiales o equipos que necesitas.')
+                                    ->label(__('panel.booking.required_products'))
+                                    ->helperText(__('panel.booking.required_products_help'))
                                     ->multiple()
                                     ->searchable()
                                     ->options(fn () => cache()->remember(
@@ -279,8 +294,8 @@ class BookingResource extends Resource
                     ->successNotification(
                         Notification::make()
                             ->success()
-                            ->title('Solicitud enviada')
-                            ->body('Tu reserva fue registrada y está pendiente de aprobación.')
+                            ->title(__('panel.booking.success_title'))
+                            ->body(__('panel.booking.success_body'))
                             ->duration(5005)
                     ),
             ])

@@ -48,9 +48,9 @@ class CustomProfileComponent extends Component implements HasForms
 
   protected function getContactInformationSection(): Section
   {
-    return Section::make('Información de contacto')
+    return Section::make(__('panel.profile.contact_section'))
       ->aside()
-      ->description('Actualiza tu número telefónico y dirección de residencia.')
+      ->description(__('panel.profile.contact_description'))
       ->schema([
         $this->getPhoneInput(),
         $this->getAddressInput(),
@@ -60,19 +60,19 @@ class CustomProfileComponent extends Component implements HasForms
   protected function getPhoneInput(): TextInput
   {
     return TextInput::make('phone')
-      ->label('Teléfono')
-      ->placeholder('Ejemplo: +57 314 567 8900')
+      ->label(__('panel.profile.phone'))
+      ->placeholder(__('panel.profile.phone_placeholder'))
       ->required()
       ->maxLength(15)
       ->tel() // Agrega validación específica para teléfonos
-      ->helperText('Ingresa tu número con código de país');
+      ->helperText(__('panel.profile.phone_help'));
   }
 
   protected function getAddressInput(): TextInput
   {
     return TextInput::make('address')
-      ->label('Dirección')
-      ->placeholder('Ejemplo: Calle Principal #123, Ciudad')
+      ->label(__('panel.profile.address'))
+      ->placeholder(__('panel.profile.address_placeholder'))
       ->required()
       ->maxLength(255)
       ->columnSpanFull();
@@ -97,18 +97,18 @@ class CustomProfileComponent extends Component implements HasForms
   protected function sendSuccessNotification(): void
   {
     Notification::make()
-      ->title('Información actualizada exitosamente')
+      ->title(__('panel.profile.saved_title'))
       ->success()
-      ->body('Tus datos de contacto han sido guardados correctamente.')
+      ->body(__('panel.profile.saved_body'))
       ->send();
   }
 
   protected function sendErrorNotification(): void
   {
     Notification::make()
-      ->title('Error al actualizar')
+      ->title(__('panel.profile.error_title'))
       ->danger()
-      ->body('Ocurrió un error al intentar guardar tus datos. Por favor intenta nuevamente.')
+      ->body(__('panel.profile.error_body'))
       ->send();
   }
 

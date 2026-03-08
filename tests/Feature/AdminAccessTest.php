@@ -14,8 +14,7 @@ class AdminAccessTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertSuccessful()
-            ->assertViewIs('auth.login');
+        $response->assertRedirect('/admin/login');
     }
 
     public function test_access_admin_with_auth(): void

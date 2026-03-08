@@ -25,15 +25,35 @@ class LaboratoryResource extends Resource
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-beaker';
 
-    protected static ?string $navigationLabel = 'Laboratorios';
+    protected static ?string $navigationLabel = null;
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Configuración';
+    protected static string | \UnitEnum | null $navigationGroup = null;
 
     protected static ?int $navigationSort = 100;
 
-    protected static ?string $pluralModelLabel = 'Laboratorios';
+    protected static ?string $pluralModelLabel = null;
 
-    protected static ?string $modelLabel = 'Laboratorio';
+    protected static ?string $modelLabel = null;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('panel.nav.settings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('panel.resources.laboratory.navigation');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('panel.resources.laboratory.model');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('panel.resources.laboratory.plural');
+    }
 
     public static function canViewAny(): bool
     {

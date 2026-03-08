@@ -11,13 +11,13 @@ class Dashboard extends BaseDashboard
     {
         return [
             Action::make('downloadPdfReport')
-                ->label('Descargar PDF')
+                ->label(__('panel.actions.download_pdf'))
                 ->icon('heroicon-o-document-arrow-down')
                 ->color('primary')
                 ->url(route('reports.dashboard.download')),
 
             Action::make('downloadExcelReport')
-                ->label('Descargar Excel')
+                ->label(__('panel.actions.download_excel'))
                 ->icon('heroicon-o-table-cells')
                 ->color('success')
                 ->url(route('reports.excel.download')),

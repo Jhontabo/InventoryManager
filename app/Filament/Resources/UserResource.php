@@ -32,13 +32,33 @@ class UserResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $modelLabel = 'Usuario';
+    protected static ?string $modelLabel = null;
 
-    protected static ?string $pluralModelLabel = 'Usuarios';
+    protected static ?string $pluralModelLabel = null;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Administración';
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
     protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('panel.nav.admin');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('panel.resources.user.navigation');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('panel.resources.user.model');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('panel.resources.user.plural');
+    }
 
     public static function canViewAny(): bool
     {

@@ -24,15 +24,35 @@ class MaintenanceResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
-    protected static ?string $navigationLabel = 'Mantenimientos';
+    protected static ?string $navigationLabel = null;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Configuración';
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
     protected static ?int $navigationSort = 103;
 
-    protected static ?string $modelLabel = 'Mantenimiento';
+    protected static ?string $modelLabel = null;
 
-    protected static ?string $pluralModelLabel = 'Mantenimientos';
+    protected static ?string $pluralModelLabel = null;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('panel.nav.settings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('panel.resources.maintenance.navigation');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('panel.resources.maintenance.model');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('panel.resources.maintenance.plural');
+    }
 
     public static function canViewAny(): bool
     {

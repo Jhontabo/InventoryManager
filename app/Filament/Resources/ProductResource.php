@@ -52,15 +52,35 @@ class ProductResource extends Resource
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cube';
 
-    protected static ?string $navigationLabel = 'Inventario';
+    protected static ?string $navigationLabel = null;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Configuración';
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
-    protected static ?string $modelLabel = 'Producto';
+    protected static ?string $modelLabel = null;
 
-    protected static ?string $pluralLabel = 'Productos';
+    protected static ?string $pluralLabel = null;
 
     protected static ?int $navigationSort = 101;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('panel.nav.settings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('panel.resources.product.navigation');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('panel.resources.product.model');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('panel.resources.product.plural');
+    }
 
     public static function canViewAny(): bool
     {

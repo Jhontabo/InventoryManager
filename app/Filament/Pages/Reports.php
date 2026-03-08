@@ -21,15 +21,30 @@ class Reports extends Page
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $navigationLabel = 'Reportes';
+    protected static ?string $navigationLabel = null;
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Administración';
+    protected static string | \UnitEnum | null $navigationGroup = null;
 
-    protected static ?string $title = 'Reportes del Sistema';
+    protected static ?string $title = null;
 
     protected static ?int $navigationSort = 100;
 
     protected string $view = 'filament.pages.reports';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('panel.pages.reports.navigation');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('panel.nav.admin');
+    }
+
+    public function getTitle(): string
+    {
+        return __('panel.pages.reports.title');
+    }
 
     protected static function canView(): bool
     {
@@ -50,13 +65,13 @@ class Reports extends Page
     {
         return [
             Action::make('downloadPdf')
-                ->label('Descargar PDF')
+                ->label(__('panel.actions.download_pdf'))
                 ->icon('heroicon-o-document-arrow-down')
                 ->color('primary')
                 ->url(route('reports.dashboard.download')),
 
             Action::make('downloadExcel')
-                ->label('Descargar Excel')
+                ->label(__('panel.actions.download_excel'))
                 ->icon('heroicon-o-table-cells')
                 ->color('success')
                 ->url(route('reports.excel.download')),

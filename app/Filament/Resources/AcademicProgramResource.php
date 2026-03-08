@@ -21,15 +21,35 @@ class AcademicProgramResource extends Resource
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static ?string $navigationLabel = 'Programas Académicos';
+    protected static ?string $navigationLabel = null;
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Configuración';
+    protected static string | \UnitEnum | null $navigationGroup = null;
 
     protected static ?int $navigationSort = 102;
 
-    protected static ?string $modelLabel = 'Programa Académico';
+    protected static ?string $modelLabel = null;
 
-    protected static ?string $pluralModelLabel = 'Programas Académicos';
+    protected static ?string $pluralModelLabel = null;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('panel.nav.settings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('panel.resources.academic_program.navigation');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('panel.resources.academic_program.model');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('panel.resources.academic_program.plural');
+    }
 
     public static function canViewAny(): bool
     {

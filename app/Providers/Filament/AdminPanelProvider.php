@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Auth\Login as FilamentLogin;
 use AlizHarb\ActivityLog\ActivityLogPlugin;
 use Andreia\FilamentUiSwitcher\FilamentUiSwitcherPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -37,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->maxContentWidth(Width::Full)
-            ->login()
+            ->login(FilamentLogin::class)
             ->profile(false)
             ->sidebarFullyCollapsibleOnDesktop()
             ->colors([
@@ -45,13 +46,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label('Gestión de Reservas'),
+                    ->label(__('panel.nav.bookings')),
                 NavigationGroup::make()
-                    ->label('Préstamos'),
+                    ->label(__('panel.nav.loans')),
                 NavigationGroup::make()
-                    ->label('Administración'),
+                    ->label(__('panel.nav.admin')),
                 NavigationGroup::make()
-                    ->label('Configuración'),
+                    ->label(__('panel.nav.settings')),
             ])
             ->databaseNotifications()
             ->databaseNotificationsPolling('20s')
@@ -60,18 +61,23 @@ class AdminPanelProvider extends PanelProvider
                 FilamentApexChartsPlugin::make(),
                 FilamentShieldPlugin::make(),
                 ActivityLogPlugin::make()
-                    ->label('Auditoria')
-                    ->pluralLabel('Auditorias')
-                    ->navigationGroup('Administración'),
+                    ->label(__('panel.activity_log.label'))
+                    ->pluralLabel(__('panel.activity_log.plural'))
+                    ->navigationGroup(__('panel.nav.admin')),
                 FilamentEditProfilePlugin::make()
                     ->slug('mi-perfil')
-                    ->setTitle('Mi perfil')
-                    ->setNavigationLabel('Mi perfil')
+                    ->setTitle(__('panel.profile.title'))
+                    ->setNavigationLabel(__('panel.profile.navigation'))
                     ->setIcon('heroicon-o-user')
-                    ->shouldShowDeleteAccountForm(false)
-                    ->shouldShowBrowserSessionsForm(false)
-                    ->shouldShowEditPasswordForm(false)
                     ->shouldShowEditProfileForm(true)
+                    ->shouldShowEmailForm(true)
+                    ->shouldShowEditPasswordForm(false)
+                    ->shouldShowDeleteAccountForm(true)
+                    ->shouldShowBrowserSessionsForm(true)
+                    ->shouldShowLocaleForm(true, ['es' => 'Español', 'en' => 'English'])
+                    ->shouldShowThemeColorForm(true)
+                    ->shouldShowMultiFactorAuthentication(true)
+                    ->shouldShowSanctumTokens(true)
                     ->shouldShowAvatarForm(
                         value: true,
                         directory: 'avatars', // image will be stored in 'storage/app/public/avatars
@@ -88,7 +94,7 @@ class AdminPanelProvider extends PanelProvider
                     ->selectable(true)
                     ->editable(true)
                     ->timezone(config('app.timezone'))
-                    ->locale(config('app.locale'))
+                    ->locale(fn (): string => app()->getLocale())
                     ->plugins(['dayGrid', 'timeGrid'])
                     ->config([
                         'dayMaxEvents' => true,

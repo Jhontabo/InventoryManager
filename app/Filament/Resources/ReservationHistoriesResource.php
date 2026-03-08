@@ -27,15 +27,35 @@ class ReservationHistoriesResource extends Resource
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clock';
 
-    protected static ?string $navigationLabel = 'Mis Reservas';
+    protected static ?string $navigationLabel = null;
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Gestión de Reservas';
+    protected static string | \UnitEnum | null $navigationGroup = null;
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $modelLabel = 'Reserva';
+    protected static ?string $modelLabel = null;
 
-    protected static ?string $pluralLabel = 'Mis Reservas';
+    protected static ?string $pluralLabel = null;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('panel.nav.bookings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('panel.resources.reservation_histories.navigation');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('panel.resources.reservation_histories.model');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('panel.resources.reservation_histories.plural');
+    }
 
     public static function getNavigationBadge(): ?string
     {

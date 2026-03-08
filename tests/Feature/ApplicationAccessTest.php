@@ -7,11 +7,11 @@ use Tests\TestCase;
 
 class ApplicationAccessTest extends TestCase
 {
-    public function test_home_page_loads_successfully(): void
+    public function test_home_redirects_to_filament_login(): void
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response->assertRedirect('/admin/login');
     }
 
     public function test_dashboard_route_redirects_to_admin(): void

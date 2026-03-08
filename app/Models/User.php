@@ -35,6 +35,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'custom_fields',
         'avatar_url',
         'document_number',
+        'theme',
+        'theme_color',
+        'locale',
 
     ];
 
@@ -50,6 +53,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return [
             'custom_fields' => 'array',
             'password' => 'hashed',
+            'locale' => 'string',
         ];
     }
 

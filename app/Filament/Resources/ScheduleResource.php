@@ -15,15 +15,35 @@ class ScheduleResource extends Resource
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-calendar';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Gestión de Reservas';
+    protected static string | \UnitEnum | null $navigationGroup = null;
 
     protected static ?int $navigationSort = 4;
 
-    protected static ?string $navigationLabel = 'Gestión de Horarios';
+    protected static ?string $navigationLabel = null;
 
-    protected static ?string $modelLabel = 'Horario';
+    protected static ?string $modelLabel = null;
 
-    protected static ?string $pluralLabel = 'Horarios';
+    protected static ?string $pluralLabel = null;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('panel.nav.bookings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('panel.resources.schedule.navigation');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('panel.resources.schedule.model');
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return __('panel.resources.schedule.plural');
+    }
 
     public static function canAccess(): bool
     {
