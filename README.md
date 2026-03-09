@@ -1,22 +1,19 @@
 # InventoryManager
 
-![InventoryManager Logo](public/img/logo.png)
-
 InventoryManager is a Laravel + Filament web application for laboratory inventory management.  
 It centralizes stock control, reservations, loans, schedules, and auditability for academic environments.
 
 ## System Preview
 
-### Login
+### Dashboard
 ![Login](docs/screenshots/screenshot-1.png)
 
-### Dashboard
+### Roles
 ![Dashboard](docs/screenshots/screenshot-2.png)
 
 ### Inventory Module
 ![Inventory](docs/screenshots/screenshot-3.png)
 
-### Booking & Calendar Module
 ![Bookings](docs/screenshots/screenshot-4.png)
 
 > Note: Screenshots are stored in `docs/screenshots/`. If you rename files, update these paths.
