@@ -8,18 +8,18 @@ It centralizes stock control, reservations, loans, schedules, and auditability f
 ## System Preview
 
 ### Login
-![Login](docs/screenshots/login.svg)
+![Login](docs/screenshots/screenshot-1.png)
 
 ### Dashboard
-![Dashboard](docs/screenshots/dashboard.svg)
+![Dashboard](docs/screenshots/screenshot-2.png)
 
 ### Inventory Module
-![Inventory](docs/screenshots/inventory.svg)
+![Inventory](docs/screenshots/screenshot-3.png)
 
 ### Booking & Calendar Module
-![Bookings](docs/screenshots/bookings.svg)
+![Bookings](docs/screenshots/screenshot-4.png)
 
-> Note: Current images are mockups stored in `docs/screenshots/`. You can replace them with real screenshots without changing README paths.
+> Note: Screenshots are stored in `docs/screenshots/`. If you rename files, update these paths.
 
 ## Problem It Solves
 - Dispersed manual records for equipment and supplies.
