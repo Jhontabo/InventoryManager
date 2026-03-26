@@ -75,3 +75,6 @@ npm run build
 ## Security Notes
 - Never commit real secrets in `.env`.
 - Validate production values for `APP_ENV`, `APP_DEBUG`, DB and mail settings.
+
+## Operations
+- Production checklist: `docs/production-checklist.md`
