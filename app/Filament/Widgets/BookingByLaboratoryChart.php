@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class BookingByLaboratoryChart extends ChartWidget
 {
+    protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
+
+    protected ?string $placeholderHeight = '320px';
+
     public static function canView(): bool
     {
         $user = auth()->user();
@@ -25,13 +31,11 @@ class BookingByLaboratoryChart extends ChartWidget
 
     protected function getData(): array
     {
+        $this->laboratoryId = session()->get('lab');
+
         $cacheKey = 'booking-by-lab-'.($this->laboratoryId ?? 'all');
 
         return cache()->remember($cacheKey, 300, function () {
-            // Get the laboratory from session if available
-            $this->laboratoryId = session()->get('lab');
-
-            // Query to count bookings per laboratory
             $query = Laboratory::query()
                 ->leftJoin('bookings', 'laboratories.id', '=', 'bookings.laboratory_id')
                 ->select(

@@ -10,6 +10,17 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class LabOccupationStatsWidget extends BaseWidget
 {
+    protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
+
+    protected ?string $placeholderHeight = '160px';
+
+    public static function canView(): bool
+    {
+        return auth()->user()?->hasAnyRole(['ADMIN', 'COORDINADOR']) ?? false;
+    }
+
     protected function getHeading(): string
     {
         return 'Métricas de Ocupación';

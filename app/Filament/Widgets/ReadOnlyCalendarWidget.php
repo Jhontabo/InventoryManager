@@ -58,33 +58,42 @@ class ReadOnlyCalendarWidget extends CalendarWidget
 
         $laboratoryId = $this->laboratoryId;
 
-        $query = Schedule::query()
-            ->with('laboratory')
-            ->with(['booking' => function ($q) {
-                $q->where('status', 'approved');
-            }])
-            ->where('type', 'unstructured')
-            ->whereBetween('start_at', [$start, $end]);
+        $cacheKey = sprintf(
+            'readonly-calendar-events:%s:%s:%s',
+            $laboratoryId ?? 'all',
+            $start->toDateString(),
+            $end->toDateString(),
+        );
 
-        if ($laboratoryId) {
-            $query->where('laboratory_id', $laboratoryId);
-        }
+        return cache()->remember($cacheKey, 120, function () use ($start, $end, $laboratoryId): array {
+            $query = Schedule::query()
+                ->select(['id', 'title', 'start_at', 'end_at', 'laboratory_id'])
+                ->with('laboratory:id,name')
+                ->withCount(['booking as approved_bookings_count' => fn ($bookingQuery) => $bookingQuery->where('status', 'approved')])
+                ->where('type', 'unstructured')
+                ->whereBetween('start_at', [$start, $end]);
 
-        return $query->get()
-            ->map(function (Schedule $schedule) {
-                $hasApprovedBooking = $schedule->booking->isNotEmpty();
+            if ($laboratoryId) {
+                $query->where('laboratory_id', $laboratoryId);
+            }
 
-                return [
-                    'id' => $schedule->id,
-                    'title' => $hasApprovedBooking
-                        ? 'Ocupado: '.($schedule->laboratory->name ?? '')
-                        : 'Libre: '.($schedule->laboratory->name ?? ''),
-                    'start' => $schedule->start_at,
-                    'end' => $schedule->end_at,
-                    'backgroundColor' => $hasApprovedBooking ? '#ef4444' : '#22c55e',
-                    'borderColor' => $hasApprovedBooking ? '#dc2626' : '#16a34a',
-                    'textColor' => '#ffffff',
-                ];
-            })->toArray();
+            return $query->get()
+                ->map(function (Schedule $schedule): array {
+                    $hasApprovedBooking = (int) ($schedule->approved_bookings_count ?? 0) > 0;
+
+                    return [
+                        'id' => $schedule->id,
+                        'title' => $hasApprovedBooking
+                            ? 'Ocupado: '.($schedule->laboratory->name ?? '')
+                            : 'Libre: '.($schedule->laboratory->name ?? ''),
+                        'start' => $schedule->start_at,
+                        'end' => $schedule->end_at,
+                        'backgroundColor' => $hasApprovedBooking ? '#ef4444' : '#22c55e',
+                        'borderColor' => $hasApprovedBooking ? '#dc2626' : '#16a34a',
+                        'textColor' => '#ffffff',
+                    ];
+                })
+                ->all();
+        });
     }
 }

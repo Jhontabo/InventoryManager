@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class BookingTrendsAreaChart extends ChartWidget
 {
+    protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
+
+    protected ?string $placeholderHeight = '360px';
+
     public static function canView(): bool
     {
         $user = auth()->user();

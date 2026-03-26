@@ -6,6 +6,7 @@ use App\Models\User;
 use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -24,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         Model::unguard();
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch): void {
             $switch

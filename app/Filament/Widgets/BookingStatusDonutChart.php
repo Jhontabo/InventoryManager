@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\DB;
 
 class BookingStatusDonutChart extends ChartWidget
 {
+    protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
+
+    protected ?string $placeholderHeight = '320px';
+
     public static function canView(): bool
     {
         $user = auth()->user();
@@ -38,7 +44,7 @@ class BookingStatusDonutChart extends ChartWidget
                     [
                         'label' => 'Total Bookings',
                         'data' => $data->pluck('total')->toArray(),
-                        'backgroundColor' => $this->generateColors($data->count()),
+                        'backgroundColor' => $this->generateColors($data->pluck('status')->all()),
                         'borderColor' => '#ffffff',
                         'borderWidth' => 1,
                     ],
@@ -52,7 +58,7 @@ class BookingStatusDonutChart extends ChartWidget
         return 'pie';
     }
 
-    protected function generateColors(int $count): array
+    protected function generateColors(array $statuses): array
     {
         $statusColors = [
             'approved' => '#10b981',   // Green
@@ -68,7 +74,6 @@ class BookingStatusDonutChart extends ChartWidget
         ];
 
         $colors = [];
-        $statuses = Booking::groupBy('status')->pluck('status')->toArray();
 
         foreach ($statuses as $i => $status) {
             $colors[] = $statusColors[strtolower($status)] ?? $baseColors[$i % count($baseColors)];

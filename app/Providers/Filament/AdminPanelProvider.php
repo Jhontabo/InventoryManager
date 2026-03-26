@@ -2,9 +2,9 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Auth\Login as FilamentLogin;
 use AlizHarb\ActivityLog\ActivityLogPlugin;
 use Andreia\FilamentUiSwitcher\FilamentUiSwitcherPlugin;
+use App\Filament\Auth\Login as FilamentLogin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -55,7 +55,7 @@ class AdminPanelProvider extends PanelProvider
                     ->label(__('panel.nav.settings')),
             ])
             ->databaseNotifications()
-            ->databaseNotificationsPolling('20s')
+            ->databaseNotificationsPolling('90s')
             ->plugins([
                 FilamentUiSwitcherPlugin::make()->withModeSwitcher(),
                 FilamentApexChartsPlugin::make(),

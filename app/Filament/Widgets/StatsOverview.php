@@ -11,6 +11,12 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverview extends BaseWidget
 {
+    protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
+
+    protected ?string $placeholderHeight = '160px';
+
     protected ?string $heading = 'Resumen de estadísticas';
 
     protected ?string $description = 'Métricas clave del sistema';

@@ -31,7 +31,9 @@ class ScheduleCalendar extends Page
 
     public function getDropdownOptions(): array
     {
-        $laboratories = Laboratory::orderBy('name')->pluck('name', 'id')->toArray();
+        $laboratories = cache()->remember('schedule-calendar-laboratories', 1800, fn (): array => Laboratory::orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray());
 
         return ['All' => 'Todos los laboratorios'] + $laboratories;
     }

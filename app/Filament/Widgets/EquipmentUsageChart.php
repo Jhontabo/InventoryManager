@@ -8,7 +8,18 @@ use Illuminate\Support\Facades\DB;
 
 class EquipmentUsageChart extends ChartWidget
 {
+    protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
+
+    protected ?string $placeholderHeight = '320px';
+
     protected ?string $heading = 'Top 5 Equipos Más Utilizados';
+
+    public static function canView(): bool
+    {
+        return auth()->user()?->hasAnyRole(['ADMIN', 'COORDINADOR']) ?? false;
+    }
 
     protected static ?int $sort = 3;
 

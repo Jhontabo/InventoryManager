@@ -22,6 +22,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Saade\FilamentFullCalendar\Actions\CreateAction;
 use Saade\FilamentFullCalendar\Actions\DeleteAction;
 use Saade\FilamentFullCalendar\Actions\EditAction;
@@ -29,6 +30,10 @@ use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 
 class CalendarWidget extends FullCalendarWidget
 {
+    protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
+
     public Model|string|null $model = Schedule::class;
 
     public ?int $laboratoryId = null;
@@ -71,34 +76,56 @@ class CalendarWidget extends FullCalendarWidget
         $start = Carbon::parse($fetchInfo['start']);
         $end = Carbon::parse($fetchInfo['end']);
 
-        return Schedule::query()
-            ->with('booking')
-            ->when(
-                $this->laboratoryId,
-                fn ($q) => $q->where('laboratory_id', $this->laboratoryId)
-            )
-            ->where(function ($q) use ($start, $end) {
-                $q->whereBetween('start_at', [$start, $end])
-                    ->orWhere(function ($q2) use ($start, $end) {
-                        $q2->whereNotNull('recurrence_until')
-                            ->where('recurrence_until', '>=', $start)
-                            ->where('start_at', '<=', $end);
-                    });
-            })
-            ->get()
-            ->flatMap(function (Schedule $s) use ($start, $end) {
-                return $s->recurrence_days
-                    ? $this->generateRecurringEvents($s, $start, $end)
-                    : [$this->formatEvent($s)];
-            })
-            ->values()
-            ->toArray();
+        $cacheKey = sprintf(
+            'calendar-events:%s:%s:%s',
+            $this->laboratoryId ?? 'all',
+            $start->toDateString(),
+            $end->toDateString(),
+        );
+
+        return Cache::remember($cacheKey, 120, function () use ($start, $end): array {
+            return Schedule::query()
+                ->select([
+                    'id',
+                    'title',
+                    'start_at',
+                    'end_at',
+                    'color',
+                    'type',
+                    'laboratory_id',
+                    'recurrence_days',
+                    'recurrence_until',
+                ])
+                ->withCount([
+                    'booking as approved_bookings_count' => fn ($query) => $query->where('status', 'approved'),
+                ])
+                ->when(
+                    $this->laboratoryId,
+                    fn ($query) => $query->where('laboratory_id', $this->laboratoryId)
+                )
+                ->where(function ($query) use ($start, $end) {
+                    $query->whereBetween('start_at', [$start, $end])
+                        ->orWhere(function ($nestedQuery) use ($start, $end) {
+                            $nestedQuery->whereNotNull('recurrence_until')
+                                ->where('recurrence_until', '>=', $start)
+                                ->where('start_at', '<=', $end);
+                        });
+                })
+                ->get()
+                ->flatMap(function (Schedule $schedule) use ($start, $end) {
+                    return $schedule->recurrence_days
+                        ? $this->generateRecurringEvents($schedule, $start, $end)
+                        : [$this->formatEvent($schedule)];
+                })
+                ->values()
+                ->all();
+        });
     }
 
     protected function formatEvent(Schedule $schedule): array
     {
         if ($schedule->type === 'unstructured') {
-            $isReserved = $schedule->booking->where('status', 'approved')->isNotEmpty();
+            $isReserved = (int) ($schedule->approved_bookings_count ?? 0) > 0;
 
             return [
                 'id' => $schedule->id,
@@ -135,7 +162,14 @@ class CalendarWidget extends FullCalendarWidget
         $until = Carbon::parse($schedule->recurrence_until);
         $days = array_filter(array_map('intval', explode(',', $schedule->recurrence_days ?? '')));
 
-        foreach (CarbonPeriod::create($startDate, $until) as $date) {
+        $periodStart = $startDate->greaterThan($rangeStart) ? $startDate->copy() : $rangeStart->copy();
+        $periodEnd = $until->lessThan($rangeEnd) ? $until->copy() : $rangeEnd->copy();
+
+        if ($periodEnd->lt($periodStart)) {
+            return $events;
+        }
+
+        foreach (CarbonPeriod::create($periodStart->startOfDay(), $periodEnd->endOfDay()) as $date) {
             if (! in_array($date->dayOfWeekIso, $days, true)) {
                 continue;
             }
@@ -412,7 +446,9 @@ class CalendarWidget extends FullCalendarWidget
                     Grid::make(4)->schema([
                         Select::make('laboratory_id')
                             ->label('Espacio académico')
-                            ->options(Laboratory::orderBy('name')->pluck('name', 'id'))
+                            ->options(fn (): array => cache()->remember('calendar-widget-laboratories', 1800, fn (): array => Laboratory::orderBy('name')
+                                ->pluck('name', 'id')
+                                ->toArray()))
                             ->searchable()
                             ->default(fn () => $this->laboratoryId)
                             ->disabled(fn () => filled($this->laboratoryId))
@@ -440,9 +476,10 @@ class CalendarWidget extends FullCalendarWidget
                     Grid::make(2)->schema([
                         Select::make('academic_program_name')
                             ->label('Programa académico')
-                            ->options(fn () => AcademicProgram::where('is_active', true)
+                            ->options(fn (): array => cache()->remember('calendar-widget-academic-programs', 1800, fn (): array => AcademicProgram::where('is_active', true)
                                 ->orderBy('name')
-                                ->pluck('name', 'name'))
+                                ->pluck('name', 'name')
+                                ->toArray()))
                             ->searchable()
                             ->preload()
                             ->required(),

@@ -8,6 +8,12 @@ use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class WeeklyBookingsApexChart extends ApexChartWidget
 {
+    protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
+
+    protected ?string $placeholderHeight = '340px';
+
     protected static ?string $chartId = 'weeklyBookingsApexChart';
 
     protected static ?string $heading = 'Reservas por semana';

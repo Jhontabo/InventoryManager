@@ -12,7 +12,7 @@ class Login extends BaseLogin
 
         $this->form->fill([
             'email' => env('SUPER_ADMIN_EMAIL', 'admin@example.com'),
-            'password' => env('SUPER_ADMIN_PASSWORD', ''),
+            'password' => env('SUPER_ADMIN_PASSWORD', 'Demo12345!'),
             'remember' => true,
         ]);
     }

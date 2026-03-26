@@ -9,6 +9,17 @@ use Illuminate\Support\Facades\Auth;
 
 class LoanStatsWidget extends BaseWidget
 {
+    protected static bool $isLazy = true;
+
+    protected ?string $pollingInterval = null;
+
+    protected ?string $placeholderHeight = '160px';
+
+    public static function canView(): bool
+    {
+        return auth()->user()?->hasRole('LABORATORISTA') ?? false;
+    }
+
     protected function getStats(): array
     {
         $user = Auth::user();
@@ -17,14 +28,23 @@ class LoanStatsWidget extends BaseWidget
             return [];
         }
 
-        $pending = Loan::where('status', Loan::STATUS_PENDING)->count();
-        $approved = Loan::where('status', Loan::STATUS_APPROVED)->count();
-        $overdue = Loan::where('status', Loan::STATUS_APPROVED)
-            ->where('estimated_return_at', '<', now())
-            ->count();
-        $returned = Loan::where('status', Loan::STATUS_RETURNED)
-            ->whereMonth('actual_return_at', now()->month)
-            ->count();
+        $stats = cache()->remember('loan-stats-widget-'.now()->format('Y-m-d-H'), 300, function (): array {
+            return [
+                'pending' => Loan::where('status', Loan::STATUS_PENDING)->count(),
+                'approved' => Loan::where('status', Loan::STATUS_APPROVED)->count(),
+                'overdue' => Loan::where('status', Loan::STATUS_APPROVED)
+                    ->where('estimated_return_at', '<', now())
+                    ->count(),
+                'returned' => Loan::where('status', Loan::STATUS_RETURNED)
+                    ->whereMonth('actual_return_at', now()->month)
+                    ->count(),
+            ];
+        });
+
+        $pending = $stats['pending'];
+        $approved = $stats['approved'];
+        $overdue = $stats['overdue'];
+        $returned = $stats['returned'];
 
         return [
             Stat::make('Pendientes de Aprobación', $pending)
