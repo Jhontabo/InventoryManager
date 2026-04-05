@@ -5,12 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Concerns\HasPanelRoleAccess;
 use App\Filament\Resources\AcademicProgramResource\Pages;
 use App\Models\AcademicProgram;
+use Filament\Actions;
 use Filament\Forms;
-use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Actions;
 use Illuminate\Support\Facades\Cache;
 
 class AcademicProgramResource extends Resource
@@ -19,11 +21,11 @@ class AcademicProgramResource extends Resource
 
     protected static ?string $model = AcademicProgram::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-academic-cap';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-academic-cap';
 
     protected static ?string $navigationLabel = null;
 
-    protected static string | \UnitEnum | null $navigationGroup = null;
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
     protected static ?int $navigationSort = 102;
 
@@ -70,11 +72,11 @@ class AcademicProgramResource extends Resource
         return $schema
             ->columns(1)
             ->schema([
-                \Filament\Schemas\Components\Section::make('Información del Programa')
+                Section::make('Información del Programa')
                     ->icon('heroicon-o-academic-cap')
                     ->columnSpanFull()
                     ->schema([
-                        \Filament\Schemas\Components\Grid::make(2)
+                        Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('name')
                                     ->label('Nombre del Programa')

@@ -20,7 +20,6 @@ class EditUser extends EditRecord
     }
 
     /** @method \App\Models\User user() */
-
     public function beforeSave(): void
     {
         Notification::make()

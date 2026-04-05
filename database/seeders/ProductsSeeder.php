@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Laboratory;
 use App\Models\Product;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class ProductsSeeder extends Seeder
 {
@@ -19,12 +19,9 @@ class ProductsSeeder extends Seeder
                 'location' => 'Main Building, 3rd Floor',
                 'capacity' => 30,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]
         );
-
-
-
 
         // Products data
         $products = [
@@ -40,7 +37,7 @@ class ProductsSeeder extends Seeder
                 'location' => 'Shelf A1',
                 'product_type' => 'equipment',
                 'status' => 'new',
-                'image' => 'https://ejemplo.com/microscopio.jpg'
+                'image' => 'https://ejemplo.com/microscopio.jpg',
             ],
             [
                 'name' => 'HP EliteBook Laptop',
@@ -54,7 +51,7 @@ class ProductsSeeder extends Seeder
                 'location' => 'Shelf B2',
                 'product_type' => 'equipment',
                 'status' => 'used',
-                'image' => 'https://ejemplo.com/laptop.jpg'
+                'image' => 'https://ejemplo.com/laptop.jpg',
             ],
             // (Aquí continúas igual con los demás productos, ya traducidos)
         ];

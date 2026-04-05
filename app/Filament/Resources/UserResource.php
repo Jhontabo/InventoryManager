@@ -174,7 +174,7 @@ class UserResource extends Resource
                                         ->columnSpanFull(), // Ocupa todo el ancho de su sección/grid padre
                                 ]),
                         ]),
-                    Wizard\Step::make('Configuración de Cuenta')
+                    Step::make('Configuración de Cuenta')
                         ->icon('heroicon-o-cog-6-tooth')
                         ->description('Roles y estado de la cuenta.')
                         ->schema([

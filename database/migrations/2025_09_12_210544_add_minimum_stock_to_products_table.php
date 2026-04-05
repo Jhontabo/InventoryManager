@@ -6,20 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-  /**
-   * Run the migrations.
-   */
-  public function up()
-  {
-    Schema::table('products', function (Blueprint $table) {
-      $table->integer('minimum_stock')->default(0)->after('available_quantity');
-    });
-  }
+    /**
+     * Run the migrations.
+     */
+    public function up()
+    {
+        Schema::table('products', function (Blueprint $table) {
+            $table->integer('minimum_stock')->default(0)->after('available_quantity');
+        });
+    }
 
-  public function down()
-  {
-    Schema::table('products', function (Blueprint $table) {
-      $table->dropColumn('minimum_stock');
-    });
-  }
+    public function down()
+    {
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropColumn('minimum_stock');
+        });
+    }
 };

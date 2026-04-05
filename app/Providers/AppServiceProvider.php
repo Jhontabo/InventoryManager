@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Joaopaulolndev\FilamentEditProfile\Livewire\BrowserSessionsForm;
+use Joaopaulolndev\FilamentEditProfile\Livewire\DeleteAccountForm;
+use Joaopaulolndev\FilamentEditProfile\Livewire\EditPasswordForm;
+use Joaopaulolndev\FilamentEditProfile\Livewire\EditProfileForm;
+use Joaopaulolndev\FilamentEditProfile\Livewire\SanctumTokens;
 use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
@@ -40,10 +45,10 @@ class AppServiceProvider extends ServiceProvider
         });
         Gate::define('viewPulse', fn (?User $user) => app()->environment('local') || ($user?->status === 'active'));
 
-        Livewire::component('edit_profile_form', \Joaopaulolndev\FilamentEditProfile\Livewire\EditProfileForm::class);
-        Livewire::component('edit_password_form', \Joaopaulolndev\FilamentEditProfile\Livewire\EditPasswordForm::class);
-        Livewire::component('delete_account_form', \Joaopaulolndev\FilamentEditProfile\Livewire\DeleteAccountForm::class);
-        Livewire::component('browser_sessions_form', \Joaopaulolndev\FilamentEditProfile\Livewire\BrowserSessionsForm::class);
-        Livewire::component('sanctum_tokens', \Joaopaulolndev\FilamentEditProfile\Livewire\SanctumTokens::class);
+        Livewire::component('edit_profile_form', EditProfileForm::class);
+        Livewire::component('edit_password_form', EditPasswordForm::class);
+        Livewire::component('delete_account_form', DeleteAccountForm::class);
+        Livewire::component('browser_sessions_form', BrowserSessionsForm::class);
+        Livewire::component('sanctum_tokens', SanctumTokens::class);
     }
 }

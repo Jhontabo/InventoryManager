@@ -1,8 +1,9 @@
 <?php
 
+use App\Models\User;
+
 // config/auth.php
 return [
-
 
     'guards' => [
         'web' => [
@@ -14,9 +15,8 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,  // Modelo correcto
+            'model' => User::class,  // Modelo correcto
         ],
     ],
-
 
 ];

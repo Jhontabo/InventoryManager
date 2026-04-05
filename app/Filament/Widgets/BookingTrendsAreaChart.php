@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Booking;
+use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
 
@@ -70,7 +71,7 @@ class BookingTrendsAreaChart extends ChartWidget
 
     protected function formatDate($date)
     {
-        return \Carbon\Carbon::parse($date)->format('d M');
+        return Carbon::parse($date)->format('d M');
     }
 
     public function getDescription(): ?string

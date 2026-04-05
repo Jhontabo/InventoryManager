@@ -58,7 +58,7 @@ return new class extends Migration
             $table->enum('product_type', [
                 'equipment',    // Equipo permanente
                 'supply',       // Suministro consumible
-                'consumable'    // Material de consumo
+                'consumable',    // Material de consumo
             ])->default('equipment')->comment('Tipo de producto');
 
             $table->enum('status', [
@@ -67,7 +67,7 @@ return new class extends Migration
                 'damaged',
                 'decommissioned',
                 'lost',
-                'maintenance'
+                'maintenance',
             ])->default('new')->comment('Estado actual del producto');
 
             $table->boolean('available_for_loan')->default(true)->comment('¿Disponible para préstamos?');
