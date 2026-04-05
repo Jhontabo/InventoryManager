@@ -11,7 +11,7 @@ class ListAcademicPrograms extends ListRecords
 {
     protected static string $resource = AcademicProgramResource::class;
 
-    protected Width | string | null $maxContentWidth = Width::Full;
+    protected Width|string|null $maxContentWidth = Width::Full;
 
     protected function getHeaderActions(): array
     {

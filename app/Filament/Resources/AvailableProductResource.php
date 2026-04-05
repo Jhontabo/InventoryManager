@@ -5,8 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Concerns\HasPanelRoleAccess;
 use App\Filament\Resources\AvailableProductResource\Pages;
 use App\Models\AvailableProduct;
+use App\Models\Laboratory;
 use App\Services\LoanService;
 use DomainException;
+use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -14,7 +16,6 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Actions;
 
 class AvailableProductResource extends Resource
 {
@@ -22,9 +23,9 @@ class AvailableProductResource extends Resource
 
     protected static ?string $model = AvailableProduct::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shopping-cart';
 
-    protected static string | \UnitEnum | null $navigationGroup = null;
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
     protected static ?string $navigationLabel = null;
 
@@ -124,7 +125,7 @@ class AvailableProductResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('laboratory_id')
                     ->label('Laboratorio')
-                    ->options(fn () => \App\Models\Laboratory::all()->pluck('name', 'id'))
+                    ->options(fn () => Laboratory::all()->pluck('name', 'id'))
                     ->searchable(),
             ])
             ->actions([

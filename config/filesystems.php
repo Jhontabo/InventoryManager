@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+
 return [
 
     /*
@@ -40,7 +42,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL') . '/storage',
+            'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
@@ -62,10 +64,9 @@ return [
         public_path('storage') => storage_path('app/public'),
     ],
 
-
     'auth' => [
         'guard' => 'web',  // Usa el guardia correcto
-        'user' => App\Models\User::class,  // Modelo correcto
+        'user' => User::class,  // Modelo correcto
     ],
 
 ];

@@ -8,20 +8,20 @@ use App\Models\Booking;
 use App\Models\Product;
 use App\Notifications\BookingApproved;
 use App\Notifications\BookingRejected;
-use Filament\Schemas\Components\Grid;
+use Filament\Actions;
 use Filament\Forms\Components\Placeholder;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\HtmlString;
-use Filament\Actions;
 
 class ReservationRequestResource extends Resource
 {
@@ -29,11 +29,11 @@ class ReservationRequestResource extends Resource
 
     protected static ?string $model = Booking::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-check';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-check';
 
     protected static ?string $navigationLabel = null;
 
-    protected static string | \UnitEnum | null $navigationGroup = null;
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
     protected static ?int $navigationSort = 2;
 
@@ -66,7 +66,7 @@ class ReservationRequestResource extends Resource
         return static::userHasAnyRole(['ADMIN', 'LABORATORISTA']);
     }
 
-    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
             ->with([

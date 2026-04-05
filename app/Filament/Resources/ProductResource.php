@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Concerns\HasPanelRoleAccess;
 use App\Filament\Resources\ProductResource\Pages;
+use App\Models\EquipmentDecommission;
 use App\Models\Laboratory;
+use App\Models\Loan;
 use App\Models\Product;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -415,7 +417,7 @@ class ProductResource extends Resource
                         ->modalContent(fn (Product $record) => view(
                             'filament.pages.loan-history-modal',
                             [
-                                'loans' => \App\Models\Loan::where('product_id', $record->id)
+                                'loans' => Loan::where('product_id', $record->id)
                                     ->with(['user'])
                                     ->orderBy('requested_at', 'desc')
                                     ->limit(50)
@@ -602,7 +604,7 @@ class ProductResource extends Resource
                     ])
                     ->action(function (Collection $records, array $data): void {
                         foreach ($records as $record) {
-                            \App\Models\EquipmentDecommission::create([
+                            EquipmentDecommission::create([
                                 'product_id' => $record->id,
                                 'reason' => $data['decommission_type'],
                                 'damage_type' => $data['decommission_type'] === 'damaged'

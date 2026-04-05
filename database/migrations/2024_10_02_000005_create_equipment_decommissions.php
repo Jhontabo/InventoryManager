@@ -27,14 +27,14 @@ return new class extends Migration
                 'maintenance',  // En mantenimiento
                 'lost',         // Equipo perdido
                 'obsolete',     // Obsoleto
-                'other'         // Otros motivos
+                'other',         // Otros motivos
             ])->comment('Tipo principal de baja');
 
             $table->enum('damage_type', [
                 'student',
                 'usage',
                 'manufacturing',
-                'other'
+                'other',
 
             ])->nullable();
 

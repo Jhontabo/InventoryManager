@@ -1,6 +1,8 @@
 <?php
 
 use App\Filament\Widgets\CalendarWidget;
+use App\Models\User;
+use App\Providers\Filament\AdminPanelProvider;
 use Filament\Facades\Filament;
 
 return [
@@ -15,12 +17,12 @@ return [
 
     'auth' => [
         'guard' => 'web',
-        'user' => App\Models\User::class,
+        'user' => User::class,
         'logout_redirect' => '/',
     ],
 
     'panels' => [
-        'admin' => App\Providers\Filament\AdminPanelProvider::class,
+        'admin' => AdminPanelProvider::class,
     ],
 
     'default_filesystem_disk' => env('FILAMENT_FILESYSTEM_DISK', 'public'),

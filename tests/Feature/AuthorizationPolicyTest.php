@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Laboratory;
 use App\Models\Product;
 use App\Models\User;
+use Database\Seeders\PermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Permission;
@@ -56,7 +57,7 @@ class AuthorizationPolicyTest extends TestCase
 
     public function test_admin_role_with_seeded_permissions_can_create_and_update_resources(): void
     {
-        $this->seed(\Database\Seeders\PermissionsSeeder::class);
+        $this->seed(PermissionsSeeder::class);
 
         $user = User::factory()->createOne();
         $user->assignRole('ADMIN');

@@ -10,7 +10,7 @@ class CreateAcademicProgram extends CreateRecord
 {
     protected static string $resource = AcademicProgramResource::class;
 
-    protected Width | string | null $maxContentWidth = Width::Full;
+    protected Width|string|null $maxContentWidth = Width::Full;
 
     protected function getRedirectUrl(): string
     {

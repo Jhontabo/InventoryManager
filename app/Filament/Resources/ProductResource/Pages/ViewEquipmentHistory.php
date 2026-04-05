@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\ProductResource\Pages;
 
 use App\Filament\Resources\ProductResource;
-use App\Models\Product;
 use App\Models\EquipmentDecommission;
+use App\Models\Product;
 use Filament\Actions;
 use Filament\Resources\Pages\Page;
 use Filament\Tables;
@@ -32,7 +32,7 @@ class ViewEquipmentHistory extends Page implements HasTable
         return [
             Tables\Columns\TextColumn::make('reason')
                 ->label('Motivo')
-                ->formatStateUsing(fn(string $state): string => match ($state) {
+                ->formatStateUsing(fn (string $state): string => match ($state) {
                     'damaged' => 'Dañado',
                     'maintenance' => 'Mantenimiento',
                     'lost' => 'Perdido',
@@ -41,7 +41,7 @@ class ViewEquipmentHistory extends Page implements HasTable
                 }),
             Tables\Columns\TextColumn::make('damage_type')
                 ->label('Tipo de daño')
-                ->formatStateUsing(fn(?string $state): string => $state ? match ($state) {
+                ->formatStateUsing(fn (?string $state): string => $state ? match ($state) {
                     'student' => 'Estudiante',
                     'usage' => 'Uso',
                     'manufacturing' => 'Fabricación',

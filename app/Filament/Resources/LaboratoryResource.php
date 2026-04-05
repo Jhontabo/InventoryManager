@@ -7,13 +7,16 @@ use App\Filament\Resources\LaboratoryResource\Pages;
 use App\Models\Laboratory;
 use App\Models\Product;
 use App\Models\User;
+use Filament\Actions;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
-use Filament\Schemas\Schema;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Actions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 
@@ -23,11 +26,11 @@ class LaboratoryResource extends Resource
 
     protected static ?string $model = Laboratory::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-beaker';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-beaker';
 
     protected static ?string $navigationLabel = null;
 
-    protected static string | \UnitEnum | null $navigationGroup = null;
+    protected static string|\UnitEnum|null $navigationGroup = null;
 
     protected static ?int $navigationSort = 100;
 
@@ -78,11 +81,11 @@ class LaboratoryResource extends Resource
     {
         return $schema
             ->schema([
-                \Filament\Schemas\Components\Section::make('Información del Laboratorio')
+                Section::make('Información del Laboratorio')
                     ->icon('heroicon-o-building-office-2')
                     ->description('Ingrese los datos básicos del laboratorio')
                     ->schema([
-                        \Filament\Schemas\Components\Grid::make(2)
+                        Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('name')
                                     ->label('Nombre del Laboratorio')
@@ -113,7 +116,7 @@ class LaboratoryResource extends Resource
                             ]),
                     ]),
 
-                \Filament\Schemas\Components\Section::make('Inventario del Laboratorio')
+                Section::make('Inventario del Laboratorio')
                     ->icon('heroicon-o-cube')
                     ->description('Seleccione los productos/equipos que estarán disponibles en este laboratorio')
                     ->schema([
@@ -136,11 +139,11 @@ class LaboratoryResource extends Resource
                             ->helperText('Seleccione los productos que pertenecerán a este laboratorio'),
                     ]),
 
-                \Filament\Schemas\Components\Section::make('Responsable del Laboratorio')
+                Section::make('Responsable del Laboratorio')
                     ->icon('heroicon-o-user')
                     ->description('Persona encargada de administrar el laboratorio')
                     ->schema([
-                        Forms\Components\Select::make('user_id')
+                        Select::make('user_id')
                             ->label('Encargado')
                             ->options(fn () => User::role('LABORATORISTA')->orderBy('name')->pluck('name', 'id'))
                             ->searchable()
@@ -220,7 +223,7 @@ class LaboratoryResource extends Resource
                     ->color('danger')
                     ->tooltip('Eliminar laboratorio')
                     ->successNotification(
-                        \Filament\Notifications\Notification::make()
+                        Notification::make()
                             ->success()
                             ->title('Laboratorio eliminado')
                             ->body('El laboratorio ha sido eliminado correctamente.'),
